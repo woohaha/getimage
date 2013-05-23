@@ -13,7 +13,7 @@
 #         NOTES:  ---
 #        AUTHOR:  woohaha (), realwoohaha@gmail.com
 #       COMPANY:  
-#       VERSION:  1.1
+#       VERSION:  1.5
 #       CREATED:  05/23/2013 11:32:25 PM HKT
 #      REVISION:  ---
 #===============================================================================
@@ -30,11 +30,11 @@ getimage(){
 }
 
 makePage(){
-	echo '<!DOCTYPE html>' >> $1
+	echo '<!DOCTYPE html>' > $1
 	echo '<meta charset="utf-8">' >> $1
-	echo "<title>$picSetTitle</title>" > $1
+	echo "<title>$picSetTitle</title>" >> $1
 	echo "<h1>$picSetTitle</h1>" >> $1
-	grep -Poh '(?<=src.{2})http:\/\/img\d.*?\.jpg(?=\"\ )' $tmpDir |sed 's/^http/<br><img\ src=\"http/g'|sed 's/jpg$/jpg\">/g'|tee -a $1
+	grep -Poh '(?<=src.{2})http:\/\/img\d.*?\.jpg(?=\"\ )' $tmpDir |sed 's/^http/<br><img\ src=\"http/g'|sed 's/jpg$/jpg\">/g' >> $1
 	echo -n '<br><a href="' >> $1
 	echo -n $2 | sed 's/#.*//' >> $1
 	echo '">source</a>' >> $1
