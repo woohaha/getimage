@@ -13,7 +13,7 @@
 #         NOTES:  ---
 #        AUTHOR:  woohaha (), realwoohaha@gmail.com
 #       COMPANY:  
-#       VERSION:  1.5
+#       VERSION:  1.6
 #       CREATED:  05/23/2013 11:32:25 PM HKT
 #      REVISION:  ---
 #===============================================================================
@@ -40,9 +40,13 @@ makePage(){
 	echo '">source</a>' >> $1
 }
 getInfo(){
-	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=by)')
+	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=\ by)')
 	htmPage="$HOME/163/${photographer}_${albumNum}.htm"
 	makePage $htmPage $1
+}
+
+cleanUp(){
+	rm $tmpDir
 }
 
 
@@ -50,4 +54,4 @@ getInfo(){
 inilVar $1
 getimage $1
 getInfo $1
-
+cleanUp
