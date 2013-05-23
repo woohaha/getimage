@@ -3,7 +3,7 @@
 #
 #          FILE:  get163.sh
 # 
-#         USAGE:  ./get163.sh 
+#         USAGE:  ./get163.sh TARGET_PAGE
 # 
 #   DESCRIPTION:  get pp.163.com's album
 # 
@@ -13,7 +13,7 @@
 #         NOTES:  ---
 #        AUTHOR:  woohaha (), realwoohaha@gmail.com
 #       COMPANY:  
-#       VERSION:  1.0
+#       VERSION:  1.1
 #       CREATED:  05/23/2013 11:32:25 PM HKT
 #      REVISION:  ---
 #===============================================================================
@@ -26,18 +26,25 @@ albumNum=$(basename $1|sed 's/\..*//')
 
 getimage(){
 	curl -o $tmpDir $1
+	iconv -f gbk -t utf-8 $tmpDir -o $tmpDir
 }
 
+makePage(){
+	echo '<!DOCTYPE html>' >> $1
+	echo '<meta charset="utf-8">' >> $1
+	echo "<title>$picSetTitle</title>" > $1
+	echo "<h1>$picSetTitle</h1>" >> $1
+	grep -Poh '(?<=src.{2})http:\/\/img\d.*?\.jpg(?=\"\ )' $tmpDir |sed 's/^http/<br><img\ src=\"http/g'|sed 's/jpg$/jpg\">/g'|tee -a $1
+	echo -n '<br><a href="' >> $1
+	echo -n $2 | sed 's/#.*//' >> $1
+	echo '">source</a>' >> $1
+}
 getInfo(){
 	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=by)')
 	htmPage="$HOME/163/${photographer}_${albumNum}.htm"
-	echo "<title>$picSetTitle</title>" > $htmPage
-	echo "<h1>$picSetTitle</h1>" >> $htmPage
-	grep -Poh '(?<=src.{2})http:\/\/img\d.*?\.jpg(?=\"\ )' $tmpDir |sed 's/^http/<br><img\ src=\"http/g'|sed 's/jpg$/jpg\">/g'|tee -a $htmPage
-	echo -n '<br><a href="' >> $htmPage
-	echo -n $1 >> $htmPage
-	echo '">source</a>' >> $htmPage
+	makePage $htmPage $1
 }
+
 
 
 inilVar $1
