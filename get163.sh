@@ -13,7 +13,7 @@
 #         NOTES:  ---
 #        AUTHOR:  woohaha (), realwoohaha@gmail.com
 #       COMPANY:  
-#       VERSION:  1.8
+#       VERSION:  1.9
 #       CREATED:  05/23/2013 11:32:25 PM HKT
 #      REVISION:  ---
 #===============================================================================
@@ -35,7 +35,7 @@ makePage(){
 	echo '<meta charset="utf-8">' >> $1
 	echo "<title>$picSetTitle</title>" >> $1
 	echo "<h1>$picSetTitle</h1>" >> $1
-	grep -Poh '(?<=src.{2})http:\/\/img\d.*?\.jpg(?=\"\ )' $tmpDir |sed 's/^http/<br><img\ src=\"http/g'|sed 's/jpg$/jpg\">/g' >> $1
+	ls -Ud $wwwRoot/${htmPage}_file/* |sed 's/^/<br><img\ src=\"/g'|sed 's/jpg$/jpg\">/g' >> $1
 	echo -n '<br><a href="' >> $1
 	echo -n $2 | sed 's/#.*//' >> $1
 	echo '">source</a>' >> $1
@@ -50,10 +50,13 @@ writeToIndex(){
 	echo '</h3><br>' >> $wwwRoot/index.htm
 }
 getInfo(){
-	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=\ +by)')
+	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=</title>)'|sed 's/\ by.*//')
 	htmPage="${photographer}_${albumNum}.htm"
 	makePage $wwwRoot/$htmPage $1
 	writeToIndex $htmPage $picSetTitle
+}
+downloadImages(){
+	grep -Poh '(?<=src.{2})http:\/\/img\d.*?\.jpg(?=\"\ )' $tmpDir |wget -i- -P $wwwRoot/${htmPage}_file/
 }
 
 cleanUp(){
