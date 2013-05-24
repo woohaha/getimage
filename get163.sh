@@ -13,7 +13,7 @@
 #         NOTES:  ---
 #        AUTHOR:  woohaha (), realwoohaha@gmail.com
 #       COMPANY:  
-#       VERSION:  1.6
+#       VERSION:  1.7
 #       CREATED:  05/23/2013 11:32:25 PM HKT
 #      REVISION:  ---
 #===============================================================================
@@ -39,10 +39,16 @@ makePage(){
 	echo -n $2 | sed 's/#.*//' >> $1
 	echo '">source</a>' >> $1
 }
+writeToIndex(){
+	echo "<h3>$(date +%F)	" >> index.htm
+	echo "<a href=\"$(basename $1)\">$2</a>" >> index.htm
+	echo '</h3><br>' >> index.htm
+}
 getInfo(){
 	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=\ by)')
 	htmPage="$HOME/163/${photographer}_${albumNum}.htm"
 	makePage $htmPage $1
+	writeToIndex $htmlPage $picSetTitle
 }
 
 cleanUp(){
