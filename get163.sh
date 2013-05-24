@@ -13,7 +13,7 @@
 #         NOTES:  ---
 #        AUTHOR:  woohaha (), realwoohaha@gmail.com
 #       COMPANY:  
-#       VERSION:  1.7
+#       VERSION:  1.8
 #       CREATED:  05/23/2013 11:32:25 PM HKT
 #      REVISION:  ---
 #===============================================================================
@@ -22,6 +22,7 @@ inilVar(){
 tmpDir="/tmp/$(date +%s)"
 photographer=$(dirname $1 |awk -F\/ '{print $4}')
 albumNum=$(basename $1|sed 's/\..*//')
+wwwRoot="$HOME/163"
 }
 
 getimage(){
@@ -40,15 +41,19 @@ makePage(){
 	echo '">source</a>' >> $1
 }
 writeToIndex(){
-	echo "<h3>$(date +%F)	" >> index.htm
-	echo "<a href=\"$(basename $1)\">$2</a>" >> index.htm
-	echo '</h3><br>' >> index.htm
+	echo "<h3>$(date +%F)	" >> $wwwRoot/index.htm
+	echo -n '<a href="' >> $wwwRoot/index.htm
+	echo -n "$1" >> $wwwRoot/index.htm
+	echo -n '">' >> $wwwRoot/index.htm
+	echo -n "$2" >> $wwwRoot/index.htm
+	echo -n '</a>' >> $wwwRoot/index.htm
+	echo '</h3><br>' >> $wwwRoot/index.htm
 }
 getInfo(){
-	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=\ by)')
-	htmPage="$HOME/163/${photographer}_${albumNum}.htm"
-	makePage $htmPage $1
-	writeToIndex $htmlPage $picSetTitle
+	picSetTitle=$(cat $tmpDir|grep -Poh '(?<=<title>).*(?=\ +by)')
+	htmPage="${photographer}_${albumNum}.htm"
+	makePage $wwwRoot/$htmPage $1
+	writeToIndex $htmPage $picSetTitle
 }
 
 cleanUp(){
